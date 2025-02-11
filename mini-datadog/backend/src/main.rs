@@ -2,13 +2,15 @@
 //! Entry point for the Mini Datadog backend.
 
 use axum::{
-    routing::{get, post},
+    routing::{get, post, delete},
     Router, Extension,
 };
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use std::sync::Arc;
+
+use crate::handlers::{metrics_handler, logs_handler, alerts_handler};
 
 mod handlers;
 mod models;
@@ -49,18 +51,25 @@ async fn main() {
 
     // Create router with routes
     let app = Router::new()
-        .route("/api/metrics", post(handlers::metrics_handler::ingest_metrics))
-        .route("/api/metrics", get(handlers::metrics_handler::get_metrics))
-        .route("/api/metrics/custom", post(handlers::metrics_handler::ingest_custom_metric))
-        .route("/logs/live", get(handlers::logs::ws_handler))
-        .route("/api/alerts", get(handlers::alerts::list_alerts))
-        .route("/api/alerts", post(handlers::alerts::create_alert))
-        .route("/api/alerts/:id", delete(handlers::alerts::delete_alert))
+        .route("/api/metrics", post(metrics_handler::ingest_metrics))
+        .route("/api/metrics", get(metrics_handler::get_metrics))
+        .route("/api/metrics/custom", post(metrics_handler::ingest_custom_metric))
+        .route("/logs/live", get(logs_handler::ws_handler))
+        .route("/api/alerts", get(alerts_handler::list_alerts))
+        .route("/api/alerts", post(alerts_handler::create_alert))
+        .route("/api/alerts/:id", delete(alerts_handler::delete_alert))
         .layer(Extension(db))
         .layer(CorsLayer::permissive());
 
     // Start server
-    let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
-    tracing::info!("Server running on http://127.0.0.1:8080");
-    axum::serve(listener, app).await.unwrap();
+    let addr = "0.0.0.0:8080";
+    tracing::info!("Starting server on {}", addr);
+    axum::serve(
+        TcpListener::bind(addr)
+            .await
+            .expect("Failed to bind to address"),
+        app,
+    )
+    .await
+    .expect("Failed to start server");
 }

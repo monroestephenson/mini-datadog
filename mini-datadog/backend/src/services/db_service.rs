@@ -1,6 +1,6 @@
 use sqlx::{Pool, Postgres, postgres::PgPoolOptions};
 use anyhow::Result;
-use crate::handlers::metrics_handler::{Metric, CustomMetric};
+use crate::models::{Metric, CustomMetric};
 
 pub struct DbService {
     pool: Pool<Postgres>,

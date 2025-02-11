@@ -13,7 +13,7 @@ pub struct Metric {
     pub request_count: i32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CustomMetric {
     pub name: String,
     pub value: f64,

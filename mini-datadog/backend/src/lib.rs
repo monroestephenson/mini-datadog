@@ -19,13 +19,13 @@ pub use services::db_service::DbService;
 
 mod routes;
 
-pub fn get_app_router(cfg: AppConfig) -> Router {
+pub fn get_app_router(_cfg: AppConfig) -> Router {
     Router::new()
         .merge(logs::create_route())
         .merge(metrics::create_route())
         .merge(traces::create_route())
         .merge(alerts::create_route())
-        .layer(axum::middleware::from_fn(move |req: axum::http::Request<axum::body::Body>, next: axum::middleware::Next<axum::body::Body>| {
-            next.run(req)
+        .layer(axum::middleware::from_fn(move |req: axum::http::Request<axum::body::Body>, next: axum::middleware::Next| async move {
+            next.run(req).await
         }))
 }

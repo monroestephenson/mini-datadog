@@ -5,28 +5,10 @@ use axum::{
     extract::{Extension, Query},
     Json,
 };
-use serde::{Deserialize, Serialize};
 use tokio::sync::broadcast;
 use std::sync::Arc;
-use chrono::{DateTime, Utc};
 use crate::services::db_service::DbService;
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Metric {
-    pub time: String,
-    pub cpu: f64,
-    pub memory: f64,
-    pub latency: f64,
-    pub request_count: i32,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CustomMetric {
-    pub name: String,
-    pub value: f64,
-    pub labels: std::collections::HashMap<String, String>,
-    pub timestamp: DateTime<Utc>,
-}
+use crate::models::{Metric, CustomMetric};
 
 pub async fn ingest_metrics(
     Extension(db): Extension<Arc<DbService>>,
