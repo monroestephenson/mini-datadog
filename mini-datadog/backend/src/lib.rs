@@ -6,15 +6,26 @@ use axum::Router;
 use crate::config::AppConfig;
 use crate::routes::{logs, metrics, traces, alerts};
 
+pub mod handlers;
+pub mod models;
+pub mod db;
+pub mod utils;
+pub mod services;
+pub mod config;
+
+// Re-export commonly used items
+pub use config::Config;
+pub use services::db_service::DbService;
+
+mod routes;
+
 pub fn get_app_router(cfg: AppConfig) -> Router {
     Router::new()
         .merge(logs::create_route())
         .merge(metrics::create_route())
         .merge(traces::create_route())
         .merge(alerts::create_route())
-        // You can pass config to each route if needed
-        .layer(axum::middleware::from_fn(move |req, next| {
-            // Middleware placeholder
+        .layer(axum::middleware::from_fn(move |req: axum::http::Request<axum::body::Body>, next: axum::middleware::Next<axum::body::Body>| {
             next.run(req)
         }))
 }

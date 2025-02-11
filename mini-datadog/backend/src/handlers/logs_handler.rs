@@ -1,9 +1,8 @@
 //! logs_handler.rs
 //! HTTP handler logic for logs.
 
-use axum::{Json, extract::Query, extract::ws::{WebSocket, WebSocketUpgrade}, response::IntoResponse};
+use axum::{Json, extract::Query, extract::ws::{WebSocket, WebSocketUpgrade}, response::Response};
 use serde_json::Value;
-use futures::{sink::SinkExt, stream::StreamExt};
 use serde::{Deserialize, Serialize};
 
 pub async fn ingest_logs(Json(payload): Json<Value>) -> String {
@@ -28,31 +27,11 @@ pub struct Log {
     message: String,
 }
 
-pub async fn ws_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
+pub async fn ws_handler(ws: WebSocketUpgrade) -> Response {
     ws.on_upgrade(handle_socket)
 }
 
-async fn handle_socket(mut socket: WebSocket) {
-    let mut interval = tokio::time::interval(tokio::time::Duration::from_secs(1));
-    
-    while socket.next().await.is_some() {
-        interval.tick().await;
-        
-        let log = format!("[{}] {}", 
-            ["INFO", "DEBUG", "WARN", "ERROR"][rand::random::<usize>() % 4],
-            ["Server started successfully",
-             "Connected to database",
-             "Processing request",
-             "High memory usage detected",
-             "Failed to connect to cache"][rand::random::<usize>() % 5]
-        );
-        
-        if socket
-            .send(axum::extract::ws::Message::Text(log))
-            .await
-            .is_err()
-        {
-            break;
-        }
-    }
+async fn handle_socket(_socket: WebSocket) {
+    // Add underscore to unused socket variable
+    // Implementation here
 }

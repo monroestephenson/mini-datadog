@@ -10,7 +10,6 @@ use tower_http::cors::CorsLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use std::sync::Arc;
 
-mod routes;
 mod handlers;
 mod models;
 mod db;

@@ -62,7 +62,7 @@ impl DbService {
             ORDER BY timestamp DESC
             LIMIT $1
             "#,
-            limit
+            limit as i64
         )
         .fetch_all(&self.pool)
         .await?;
@@ -85,7 +85,7 @@ impl DbService {
             DELETE FROM system_metrics
             WHERE timestamp < NOW() - INTERVAL '1 day' * $1
             "#,
-            days
+            days as f64
         )
         .execute(&self.pool)
         .await?;
@@ -95,7 +95,7 @@ impl DbService {
             DELETE FROM custom_metrics
             WHERE timestamp < NOW() - INTERVAL '1 day' * $1
             "#,
-            days
+            days as f64
         )
         .execute(&self.pool)
         .await?;
