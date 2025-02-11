@@ -11,17 +11,28 @@ export default function LiveLogTailing() {
       setLogs((prevLogs) => [...prevLogs, evt.data]);
     };
 
+    // Add some mock logs for demonstration
+    const mockLogs = [
+      '[INFO] Server started successfully',
+      '[DEBUG] Connected to database',
+      '[INFO] Processing request #1234',
+      '[WARN] High memory usage detected',
+      '[ERROR] Failed to connect to cache'
+    ];
+
+    setLogs(mockLogs);
+
     return () => {
       ws.close();
     };
   }, []);
 
   return (
-    <div>
-      <h2>Live Log Tailing</h2>
-      <div style={{ maxHeight: '200px', overflowY: 'scroll' }}>
+    <div className="dashboard-card">
+      <h2 className="card-title">Live Log Tailing</h2>
+      <div className="logs-container">
         {logs.map((log, idx) => (
-          <div key={idx}>{log}</div>
+          <div key={idx} className="log-entry">{log}</div>
         ))}
       </div>
     </div>
