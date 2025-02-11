@@ -23,3 +23,22 @@ impl AppConfig {
         }
     }
 }
+
+#[derive(Debug, Deserialize)]
+pub struct Config {
+    pub database_url: String,
+    pub metrics_retention_days: i32,
+}
+
+impl Config {
+    pub fn from_env() -> Self {
+        Self {
+            database_url: std::env::var("DATABASE_URL")
+                .unwrap_or_else(|_| "postgres://postgres:postgres@localhost:5432/mini_datadog".to_string()),
+            metrics_retention_days: std::env::var("METRICS_RETENTION_DAYS")
+                .unwrap_or_else(|_| "30".to_string())
+                .parse()
+                .unwrap_or(30),
+        }
+    }
+}
