@@ -10,7 +10,8 @@ use crate::handlers::logs_handler::*;
 
 pub fn create_route() -> Router {
     Router::new()
-        .route("/logs/ingest", post(ingest_logs))
-        .route("/logs/search", get(search_logs))
-        .route("/logs/live", get(stream_logs_ws))
+        .route("/api/logs", post(ingest_logs))
+        .route("/api/logs/aws", post(ingest_aws_logs))
+        .route("/api/logs/search", get(search_logs))
+        .route("/api/logs/live", get(ws_handler))
 }

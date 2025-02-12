@@ -5,6 +5,7 @@ pub mod aws_traces;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+use serde_json::Value;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SystemMetric {
@@ -26,6 +27,7 @@ pub struct ApplicationLog {
     pub service_name: String,
     pub user_id: Option<String>,
     pub request_id: String,
+    pub metadata: Option<Value>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
