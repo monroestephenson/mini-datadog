@@ -34,21 +34,13 @@ pub async fn get_metrics(
 }
 
 pub async fn ingest_custom_metric(
+    Extension(db): Extension<Arc<DbService>>,
     Json(metric): Json<CustomMetric>
 ) -> Json<CustomMetric> {
-    // Store custom metric
-    store_custom_metric(&metric).await;
+    if let Err(e) = db.store_custom_metric(&metric).await {
+        tracing::error!("Failed to store custom metric: {:?}", e);
+    }
     Json(metric)
-}
-
-async fn store_metric(metric: &Metric) {
-    // TODO: Implement database storage
-    tracing::info!("Storing metric: {:?}", metric);
-}
-
-async fn store_custom_metric(metric: &CustomMetric) {
-    // TODO: Implement database storage
-    tracing::info!("Storing custom metric: {:?}", metric);
 }
 
 pub async fn query_metrics(Query(params): Query<serde_json::Value>) -> String {

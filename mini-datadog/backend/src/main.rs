@@ -3,7 +3,7 @@
 
 use axum::{
     routing::{get, post, delete},
-    Router, Extension,
+    Router, Extension, response::IntoResponse,
 };
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
@@ -18,6 +18,10 @@ mod db;
 mod utils;
 mod services;
 mod config;
+
+async fn health_check() -> impl IntoResponse {
+    "OK"
+}
 
 #[tokio::main]
 async fn main() {
@@ -51,6 +55,7 @@ async fn main() {
 
     // Create router with routes
     let app = Router::new()
+        .route("/health", get(health_check))
         .route("/api/metrics", post(metrics_handler::ingest_metrics))
         .route("/api/metrics", get(metrics_handler::get_metrics))
         .route("/api/metrics/custom", post(metrics_handler::ingest_custom_metric))

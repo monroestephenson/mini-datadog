@@ -2,6 +2,7 @@
 name = "mini-datadog-backend"
 version = "0.1.0"
 edition = "2021"
+default-run = "mini-datadog-backend"
 
 [dependencies]
 axum = { version = "0.7", features = ["ws"] }
@@ -17,5 +18,14 @@ sqlx = { version = "0.7", features = ["runtime-tokio-native-tls", "postgres", "c
 anyhow = "1.0"
 rand = "0.8"
 tokio-postgres = "0.7"
+reqwest = { version = "0.11", features = ["json"] }
 
 [dev-dependencies]
+
+[[bin]]
+name = "generate_metrics"
+path = "src/bin/generate_metrics.rs"
+
+[[bin]]
+name = "mini-datadog-backend"
+path = "src/main.rs"
