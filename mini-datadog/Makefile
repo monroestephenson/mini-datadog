@@ -1,8 +1,9 @@
-.PHONY: up down build logs ps clean restart help debug up-build up-postgres prune
+.PHONY: up down build logs ps clean restart help debug up-build up-postgres prune aws-data init
 
 # Default target
 help:
 	@echo "Available commands:"
+	@echo "  make init      - Initialize the project (first time setup)"
 	@echo "  make up        - Start all services"
 	@echo "  make up-build  - Build and start all services"
 	@echo "  make down      - Stop all services"
@@ -14,32 +15,47 @@ help:
 	@echo "  make debug     - Show status and logs of all services"
 	@echo "  make up-postgres - Start only PostgreSQL (useful for development)"
 	@echo "  make prune     - Remove all unused Docker resources"
+	@echo "  make aws-data  - Start AWS-like data generator"
+
+# Initialize project
+init: clean
+	@echo "Initializing project..."
+	@docker system prune -f
+	@docker volume create mini_datadog_postgres_data || true
+	@make build
 
 # Start all services
 up:
 	@echo "Starting services..."
+	@docker compose pull postgres || true
+	docker compose up -d postgres
+	@echo "Waiting for PostgreSQL to be ready..."
+	@sleep 5
+	docker compose up -d backend
+	@echo "Waiting for backend to be ready..."
+	@sleep 5
 	docker compose up -d
-	@echo "Waiting for services to be ready..."
+	@echo "Waiting for all services to be ready..."
 	@sleep 5
 	@make health
 
 # Build and start all services
 up-build:
 	@echo "Building and starting services..."
-	docker compose up -d --build
-	@echo "Waiting for services to be ready..."
-	@sleep 5
-	@make health
+	@make down || true
+	@make clean || true
+	@docker compose build --no-cache
+	@make up
 
 # Stop all services
 down:
 	@echo "Stopping services..."
-	docker compose down
+	docker compose down --remove-orphans
 
 # Build all services
 build:
 	@echo "Building services..."
-	docker compose build
+	docker compose build --pull
 
 # View logs
 logs:
@@ -92,6 +108,11 @@ dev-frontend:
 dev-metrics:
 	cd backend && cargo run --bin generate_metrics
 
+# Start AWS data generator
+aws-data:
+	@echo "Starting AWS-like data generator..."
+	cd backend && cargo run --bin generate_aws_data
+
 # Individual service logs
 logs-backend:
 	docker compose logs -f backend
@@ -104,6 +125,9 @@ logs-postgres:
 
 logs-metrics:
 	docker compose logs -f metrics-generator
+
+logs-aws:
+	docker compose logs -f aws-data-generator
 
 # Check service health
 health:

@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM system_metrics\n            WHERE timestamp < NOW() - INTERVAL '1 day' * $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Float8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f02878b0af6269c3a82411628122ba18c75804e09e0dd7674a959e42c05e8746"
+}

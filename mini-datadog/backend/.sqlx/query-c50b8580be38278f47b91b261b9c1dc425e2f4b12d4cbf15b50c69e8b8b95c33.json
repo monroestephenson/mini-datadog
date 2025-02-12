@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT timestamp, cpu, memory, latency, request_count\n            FROM system_metrics\n            ORDER BY timestamp DESC\n            LIMIT $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 1,
+        "name": "cpu",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 2,
+        "name": "memory",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 3,
+        "name": "latency",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 4,
+        "name": "request_count",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "c50b8580be38278f47b91b261b9c1dc425e2f4b12d4cbf15b50c69e8b8b95c33"
+}

@@ -19,12 +19,17 @@ anyhow = "1.0"
 rand = "0.8"
 tokio-postgres = "0.7"
 reqwest = { version = "0.11", features = ["json"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
 
 [dev-dependencies]
 
 [[bin]]
 name = "generate_metrics"
 path = "src/bin/generate_metrics.rs"
+
+[[bin]]
+name = "generate_aws_data"
+path = "src/bin/generate_aws_data.rs"
 
 [[bin]]
 name = "mini-datadog-backend"

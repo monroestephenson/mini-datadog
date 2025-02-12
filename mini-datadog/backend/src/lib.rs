@@ -12,6 +12,7 @@ pub mod db;
 pub mod utils;
 pub mod services;
 pub mod config;
+pub mod generators;
 
 // Re-export commonly used items
 pub use config::Config;

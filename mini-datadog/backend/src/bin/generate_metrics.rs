@@ -19,7 +19,7 @@ async fn main() {
             request_count: rng.gen_range(0..1000),
         };
 
-        match client.post("http://localhost:8080/api/metrics")
+        match client.post("http://backend:8080/api/metrics")
             .json(&metric)
             .send()
             .await
